@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --blue-900: #0f2747;
+            --blue-700: #1f4f82;
+            --blue-500: #3f7fbe;
+            --blue-300: #dbeafb;
+            --blue-100: #f4f9ff;
+            --white: #ffffff;
+            --shadow: 0 18px 40px rgba(24, 64, 108, 0.14);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 32px 20px 48px;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(160deg, #eaf4ff 0%, #bfd8f5 100%);
+            color: var(--blue-900);
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            text-align: center;
+            font-size: 32px;
+        }
+
+        h2 {
+            margin: 0 0 18px;
+            font-size: 22px;
+        }
+
+        .page {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .page-subtitle {
+            margin: 0 0 28px;
+            text-align: center;
+            color: var(--blue-700);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .panel {
+            padding: 24px;
+            border-radius: 18px;
+            background: var(--white);
+            box-shadow: var(--shadow);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            border: 1px solid #c5d9ef;
+            background: var(--blue-100);
+            color: var(--blue-900);
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--blue-500);
+            box-shadow: 0 0 0 3px rgba(63, 127, 190, 0.18);
+        }
+
+        .file-upload {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            border-radius: 10px;
+            margin-bottom: 14px;
+            background-color: var(--blue-100);
+            border: 1px solid #c5d9ef;
+        }
+
+        .file-upload::file-selector-button {
+            padding: 10px 16px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--blue-700);
+            color: var(--white);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .file-upload::file-selector-button:hover {
+            background-color: #183f69;
+        }
+
+        .field-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--blue-700);
+        }
+
+        button {
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: none;
+            background-color: var(--blue-700);
+            color: var(--white);
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #183f69;
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            background-color: #7b8ba3;
+            cursor: not-allowed;
+        }
+
+        .full-width {
+            width: 100%;
+        }
+
+        .list-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .list-header h2 {
+            margin: 0;
+        }
+
+        ul,
+        .container {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li,
+        .lost-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            background: var(--blue-100);
+            color: var(--blue-900);
+        }
+
+        .item-text {
+            line-height: 1.4;
+        }
+
+        @media (max-width: 640px) {
+            .list-header,
+            li,
+            .lost-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+    <title>FindDot</title>
+
+
+</head>
+<body>
+<div class="page">
+    <h1>FindDot</h1>
+    <p class="page-subtitle">Manage lost and found items in one place.</p>
+
+    <div class="dashboard-grid">
+        <section class="panel">
+            <h2>Add Lost Item</h2>
+            <input id="lostName" placeholder="Item Name">
+            <input id="lostDesc" placeholder="Description">
+            <input id="lostLocation" placeholder="Location">
+            <div>
+                <label class="field-label" for="lostImage">Image (optional)</label>
+                <input type="file" id="lostImage" class="file-upload">
+            </div>
+            <button class="full-width" onclick="addLostItem()">Add Lost Item</button>
+        </section>
+
+        <section class="panel">
+            <h2>Add Found Item</h2>
+            <input id="foundName" placeholder="Item Name">
+            <input id="foundDesc" placeholder="Description">
+            <input id="foundLocation" placeholder="Location">
+            <button class="full-width" onclick="addFoundItem()">Add Found Item</button>
+        </section>
+
+        <section class="panel">
+            <div class="list-header">
+                <h2>Found Items</h2>
+                <button onclick="getFoundItems()">Load Found Items</button>
+            </div>
+            <ul id="foundList"></ul>
+        </section>
+
+        <section class="panel">
+            <div class="list-header">
+                <h2>Lost Items</h2>
+                <button onclick="getLostItems()">Load Lost Items</button>
+            </div>
+            <div id="lostList" class="container"></div>
+        </section>
+    </div>
+</div>
+
+<script>
+
+    function saveLostItem(imageUrl) {
+        return fetch('/lost-items', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                itemName: document.getElementById('lostName').value,
+                description: document.getElementById('lostDesc').value,
+                location: document.getElementById('lostLocation').value,
+                imageUrl: imageUrl
+            })
+        });
+    }
+
+    function addLostItem() {
+        let fileInput = document.getElementById('lostImage').files[0];
+        let wantsImage = confirm("Do you want to upload an image for this lost item?");
+
+        if (!wantsImage) {
+            saveLostItem("")
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error("Saving lost item failed");
+                    }
+                    alert("Lost item added");
+                    getLostItems();
+                })
+                .catch(err => {
+                    alert(err.message);
+                });
+            return;
+        }
+
+        if (!fileInput) {
+            alert("Select an image first, then click Add Lost Item again.");
+            return;
+        }
+
+        let formData = new FormData();
+        formData.append("file", fileInput);
+
+        fetch('/upload', {
+            method: 'POST',
+            body: formData
+        })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error("Image upload failed");
+                }
+                return res.text();
+            })
+            .then(imagePath => {
+                return saveLostItem(imagePath);
+            })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error("Saving lost item failed");
+                }
+                alert("Lost item with image added");
+                getLostItems();
+            })
+            .catch(err => {
+                alert(err.message);
+            });
+    }
+
+    function addFoundItem() {
+        fetch('/found-items', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                itemName: document.getElementById('foundName').value,
+                description: document.getElementById('foundDesc').value,
+                location: document.getElementById('foundLocation').value,
+                imageUrl: ""
+            })
+        })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error("Saving found item failed");
+                }
+                alert("Found item added");
+            })
+            .catch(err => {
+                alert(err.message);
+            });
+    }
+
+    function getFoundItems() {
+        fetch('/found-items')
+            .then(res => res.json())
+            .then(data => {
+                let list = document.getElementById('foundList');
+                list.innerHTML = '';
+                data.forEach(item => {
+                    let li = document.createElement('li');
+                    li.innerHTML = `<span class="item-text">${item.itemName} - ${item.location}</span>`;
+                    list.appendChild(li);
+                });
+            });
+    }
+
+    function getLostItems() {
+        fetch('/lost-items')
+            .then(res => res.json())
+            .then(data => {
+                let list = document.getElementById('lostList');
+                list.innerHTML = '';
+
+                data.forEach(item => {
+                    let li = document.createElement('li');
+                    li.className = 'lost-item';
+                    let isClaimed = item.status === 'CLAIMED';
+
+                    li.innerHTML = `
+                    <span class="item-text">${item.itemName} - ${item.location} (${item.status})</span>
+                    <button onclick="claimItem(${item.id})" ${isClaimed ? 'disabled' : ''}>
+                        ${isClaimed ? 'Claimed' : 'Claim'}
+                    </button>
+                `;
+
+                    list.appendChild(li);
+                });
+            });
+    }
+    function claimItem(id) {
+        fetch(`/lost-items/${id}/claim`, {
+            method: 'PUT'
+        })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error("Claiming item failed");
+                }
+                alert("Item claimed");
+                getLostItems();
+            })
+            .catch(err => {
+                alert(err.message);
+            });
+    }
+
+
+
+
+</script>
+
+</body>
+</html>
