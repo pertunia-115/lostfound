@@ -1,11 +1,19 @@
 🚀 Features
+
 📦 Add lost items
+
 🔍 View all lost items
+
 🔄 Match lost items with found items
+
 📸 Upload item images
+
 🔐 User registration and login system
+
 ✅ Mark items as claimed
+
 🎨 Modern card-based user interface
+
 🛠️ Technologies Used
 Backend: Java, Spring Boot
 Frontend: HTML, CSS, JavaScript
